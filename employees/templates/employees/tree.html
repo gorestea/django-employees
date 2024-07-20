@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Структура компании</h1>
+    <ul class="list-group" id="department-list">
+        {% if department %}
+            <li class="list-group-item">
+                <button class="btn btn-link" onclick="toggleSubDepartments({{ department.id }})">
+                    <strong>{{ department.name }}</strong>
+                </button>
+                <ul class="list-group collapse" id="department-{{ department.id }}-sub"></ul>
+                <ul class="list-group collapse" id="department-{{ department.id }}-employees"></ul>
+            </li>
+        {% else %}
+            <p>Депортаменты не найдены</p>
+        {% endif %}
+    </ul>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function toggleSubDepartments(departmentId) {
+        const subDeptList = document.getElementById(`department-${departmentId}-sub`);
+        const empList = document.getElementById(`department-${departmentId}-employees`);
+
+        if (subDeptList.classList.contains('collapse')) {
+            subDeptList.classList.remove('collapse');
+            empList.classList.remove('collapse');
+            loadSubDepartments(departmentId);
+            loadEmployees(departmentId);
+        } else {
+            subDeptList.classList.add('collapse');
+            empList.classList.add('collapse');
+        }
+    }
+
+    function loadSubDepartments(departmentId) {
+        fetch(`/api/departments/${departmentId}/sub_departments/`)
+            .then(response => response.json())
+            .then(data => {
+                const subDeptList = document.getElementById(`department-${departmentId}-sub`);
+                subDeptList.innerHTML = '';
+                data.forEach(subDept => {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('list-group-item');
+                    listItem.innerHTML = `
+                        <button class="btn btn-link" onclick="toggleSubDepartments(${subDept.id})">
+                            <strong>${subDept.name}</strong>
+                        </button>
+                        <ul class="list-group collapse" id="department-${subDept.id}-sub"></ul>
+                        <ul class="list-group collapse" id="department-${subDept.id}-employees"></ul>
+                    `;
+                    subDeptList.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('Error fetching sub-departments:', error));
+    }
+
+    function loadEmployees(departmentId) {
+        fetch(`/api/departments/${departmentId}/employees/`)
+            .then(response => response.json())
+            .then(data => {
+                const empList = document.getElementById(`department-${departmentId}-employees`);
+                empList.innerHTML = '';
+                data.forEach(emp => {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('list-group-item');
+                    listItem.innerHTML = `
+                        <button class="btn btn-link" onclick="loadEmployeeDetails(${emp.id})">
+                            ${emp.full_name} - ${emp.position}
+                        </button>
+                        <div class="collapse" id="employee-${emp.id}-details"></div>
+                    `;
+                    empList.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('Error fetching employees:', error));
+    }
+
+    function loadEmployeeDetails(employeeId) {
+        fetch(`/api/employees/${employeeId}/`)
+            .then(response => response.json())
+            .then(data => {
+                const detailsDiv = document.getElementById(`employee-${employeeId}-details`);
+                detailsDiv.innerHTML = `
+                    <p>Дата приема: ${data.hire_date}</p>
+                    <p>Зарплата: ${data.salary}</p>
+                `;
+                detailsDiv.classList.toggle('collapse');
+            })
+            .catch(error => console.error('Error fetching employee details:', error));
+    }
+</script>
+{% endblock %}
