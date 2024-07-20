@@ -1,6 +1,10 @@
+- Django
+- DRF
+- PostgreSQL
+- uWSGI + Nginx
+- Sentry
 - Docker
 - Docker Compose
-- uWSGI + Nginx
 
 ## Настройка
 
