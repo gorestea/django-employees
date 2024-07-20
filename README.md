@@ -1,5 +1,6 @@
 - Docker
 - Docker Compose
+- uWSGI + Nginx
 
 ## Настройка
 
