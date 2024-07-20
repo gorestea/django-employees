@@ -6,6 +6,7 @@ services:
       python manage.py makemigrations &&
       python manage.py migrate &&
       python manage.py test employees/tests &&
+      python manage.py create_admin && 
       uwsgi --ini /app/company/uwsgi.ini
       "
     volumes:
@@ -32,7 +33,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./company_nginx.conf:/etc/nginx/nginx.conf
+      - ./company_nginx.conf:/etc/nginx/conf.d/nginx.conf
       - ./company/uwsgi_params:/etc/nginx/uwsgi_params
       - static_volume:/app/static
     depends_on:
