@@ -6,8 +6,7 @@
 1. **Клонируйте репозиторий:**
 
    ```sh
-   git clone <repository_url>
-   cd company
+   git clone https://github.com/gorestea/django-employees.git
    ```
 
 2. Установите зависимости для запуска локально. Либо переходите к следующему шагу.
