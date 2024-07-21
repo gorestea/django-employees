@@ -14,13 +14,19 @@
    git clone https://github.com/gorestea/django-employees.git
    ```
 
-2. Установите зависимости для запуска локально. Либо переходите к следующему шагу.
+2. Настройте company/.env
+
+3. Локальный запуск. Либо (если запускать через docker-compose) переходите к следующему шагу.
 
   ```sh
   pip install requirements.txt
+  python manage.py makemigrations
+  python manage.py migrate
+  python manage.py test employees/tests
+  python manage.py create_db
+  python manage.py createsuperuser
+  python manage.py runserver
   ```
-
-3. Настройте company/.env
 
 4. Соберите и запустите Docker контейнеры:
 
